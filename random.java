@@ -1,8 +1,124 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class random {
     public static void main(String[] args) {
-        String test = "(*)";
+        System.out.println(intToRoman(3));
+    }
 
-        System.out.println(isBalanced(test));
+    public static boolean isMatch(String s, String p) {
+        if (p.isEmpty()) return s.isEmpty();
+
+        boolean first_match = (!s.isEmpty() && p.charAt(0) == s.charAt(0) || p.charAt(0) == '.');
+
+        if (p.length() >= 2 && p.charAt(1) == '*'){
+            return (isMatch(s, p.substring(2)) ||
+                    (first_match && isMatch(s.substring(1), p)));
+        } else {
+            return first_match && isMatch(s.substring(1), p.substring(1));
+        }
+
+    }
+
+    public static long countInterestingSubarrays(List<Integer> nums, int modulo, int k) {
+        int length = nums.size();
+        long count = 0;
+
+        Map<Integer, Integer> table = new HashMap<>();
+
+        for (int i = 0; i < length; i++) {
+            if (nums.get(i) % modulo == k) {
+                table.put(i * length + i, 1);
+            } else {
+                table.put(i * length + i, 0);
+            }
+        }
+
+        for (int i = 0; i < length; i++) {
+            for (int j = i; j < length; j++) {
+
+                if (i != j) {
+                    table.put(i * length + j, table.get(j * length + j) + table.get(i * length + (j - 1)));
+                }
+
+                if (table.get(i * length + j) % modulo == k) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public static int countSymmetricIntegers(int low, int high) {
+        int count = 0;
+
+        for (int i = low; i <= high; i++) {
+            if (checkIfSymmetric(i)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static boolean checkIfSymmetric(int x) {
+        int digits = 0;
+        int n = x;
+
+        while (n != 0) {
+            n /= 10;
+            digits++;
+        }
+
+        if (digits % 2 != 0) {
+            return false;
+        }
+
+        n = x;
+
+        int half = digits / 2;
+
+        int sumFirst = 0;
+
+        int sumSecond = 0;
+
+        for (int i = 0; i < half; i++) {
+            sumFirst += n % 10;
+            n /= 10;
+        }
+        for (int i = 0; i < half; i++) {
+            sumSecond += n % 10;
+            n /= 10;
+        }
+
+        if (sumFirst != sumSecond) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range [-2^31, 2^31 - 1], then return 0.
+     * Assume the environment does not allow you to store 64-bit integers (signed or unsigned).
+     * @param n
+     * @return
+     */
+
+    public static int reverse(int n) {
+        int nRev = 0;
+        
+        while (n != 0) {
+            int pop = n % 10;
+            n = n / 10;
+            if (nRev > Integer.MAX_VALUE / 10 || (nRev == Integer.MAX_VALUE / 10 && pop > 7)) return 0;
+            if (nRev < Integer.MIN_VALUE / 10 || (nRev == Integer.MIN_VALUE / 10 && pop < -8)) return 0;
+            nRev = nRev * 10 + pop;
+        }
+
+        return nRev;
     }
 
     /**
