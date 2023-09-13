@@ -5,8 +5,57 @@ import java.util.Map;
 
 public class random {
     public static void main(String[] args) {
-        System.out.println(intToRoman(3));
+        System.out.println(isPalindrome(1121));
     }
+
+    public static boolean isPalindrome(int x) {
+        if (x < 0) {
+            return false;
+        }
+
+        int n = x;
+        int length = 0;
+
+        while (n != 0) {
+            n /= 10;
+            length++;
+        }
+
+        if (length == 0 || length == 1) {
+            return true;
+        }
+
+        int midpoint = length / 2;
+
+        ArrayList<Integer> stack = new ArrayList<>();
+        int index = 0;
+
+        n = x;
+
+        while (n != 0) {
+            int i = n % 10;
+            
+            if (index < midpoint) {
+                stack.add(i);
+            } else if (index == midpoint) {
+                if (length % 2 == 0) {
+                    index++;
+                    continue;
+                }
+            } else {
+                if (stack.get(stack.size() - 1) != i) {
+                    return false;
+                }
+                stack.remove(stack.size() - 1);
+            }
+            
+            index++;
+            n /= 10;
+        }
+
+        return true;
+    }
+
 
     public static boolean isMatch(String s, String p) {
         if (p.isEmpty()) return s.isEmpty();
